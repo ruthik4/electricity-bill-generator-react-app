@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import './App.css'
 
 function App() {
+  const { t, i18n } = useTranslation()
+  
+  // State for sliding panel and language selection
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
+  const [showLanguageOptions, setShowLanguageOptions] = useState(false)
+  const [shouldRenderPanel, setShouldRenderPanel] = useState(false)
+  const [panelOpenClass, setPanelOpenClass] = useState(false)
+  
   // Form state
   const [formData, setFormData] = useState({
     units: '',
@@ -27,6 +36,42 @@ function App() {
     }));
   }, []);
 
+  // Handle panel open/close with proper animation timing
+  useEffect(() => {
+    let openTimer: ReturnType<typeof setTimeout>;
+    let renderTimer: ReturnType<typeof setTimeout>;
+    
+    if (isPanelOpen) {
+      setShouldRenderPanel(true);
+      // Delay adding the open class to ensure the element is rendered first
+      // Use a slightly longer delay for mobile devices
+      const isMobile = window.innerWidth <= 768;
+      const delay = isMobile ? 50 : 10;
+      
+      openTimer = setTimeout(() => {
+        setPanelOpenClass(true);
+      }, delay);
+    } else {
+      setPanelOpenClass(false);
+      // Match CSS transition duration
+      renderTimer = setTimeout(() => {
+        setShouldRenderPanel(false);
+      }, 300);
+    }
+    
+    return () => {
+      if (openTimer) clearTimeout(openTimer);
+      if (renderTimer) clearTimeout(renderTimer);
+    };
+  }, [isPanelOpen]);
+
+  // Handle language change
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng)
+    setShowLanguageOptions(false)
+    setIsPanelOpen(false)
+  }
+
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -49,17 +94,17 @@ function App() {
     const newErrors: any = {}
     
     if (!formData.units) {
-      newErrors.units = 'Units are required'
+      newErrors.units = t('required')
     } else if (isNaN(Number(formData.units)) || Number(formData.units) <= 0) {
-      newErrors.units = 'Units must be a positive number'
+      newErrors.units = t('positiveNumber')
     }
     
     if (!formData.previousReadingDate) {
-      newErrors.previousReadingDate = 'Previous reading date is required'
+      newErrors.previousReadingDate = t('previousReadingDateRequired')
     }
     
     if (!formData.currentReadingDate) {
-      newErrors.currentReadingDate = 'Current reading date is required'
+      newErrors.currentReadingDate = t('currentReadingDateRequired')
     }
     
     if (formData.previousReadingDate && formData.currentReadingDate) {
@@ -67,7 +112,7 @@ function App() {
       const currDate = new Date(formData.currentReadingDate)
       
       if (prevDate >= currDate) {
-        newErrors.currentReadingDate = 'Current reading date must be after previous reading date'
+        newErrors.currentReadingDate = t('currentReadingDateAfterPrevious')
       }
     }
     
@@ -185,32 +230,64 @@ function App() {
     setErrors({})
   }
 
+  // Close panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (isPanelOpen && !target.closest('.sliding-panel') && !target.closest('.menu-button')) {
+        setIsPanelOpen(false);
+        setShowLanguageOptions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isPanelOpen]);
+
   return (
     <div className="app">
       <div className="container">
         <header>
-          <h1>Electricity Bill Generator</h1>
-          <p>Calculate your electricity bill based on Telangana tariffs</p>
+          <div className="header-content">
+            <div>
+              <h1>{t('electricityBillGenerator')}</h1>
+              <p>{t('calculateBasedOnTariffs')}</p>
+            </div>
+            <div className="menu-container">
+              <button 
+                className="menu-button" 
+                onClick={() => {
+                  setIsPanelOpen(true);
+                  setShowLanguageOptions(false);
+                }}
+                aria-label="Menu"
+              >
+                ⋮
+              </button>
+            </div>
+          </div>
         </header>
         
         <main>
           {isLoading ? (
             <div className="loading-container">
               <div className="spinner"></div>
-              <p>Calculating your bill...</p>
+              <p>{t('calculatingBill')}</p>
             </div>
           ) : !billDetails ? (
             <div className="form-container">
               <form onSubmit={(e) => { e.preventDefault(); calculateBill(); }}>
                 <div className="form-group">
-                  <label htmlFor="units">Units Consumed *</label>
+                  <label htmlFor="units">{t('unitsConsumed')} *</label>
                   <input
                     type="number"
                     id="units"
                     name="units"
                     value={formData.units}
                     onChange={handleInputChange}
-                    placeholder="Enter units consumed"
+                    placeholder={t('enterUnitsConsumed')}
                     min="0"
                     step="0.01"
                   />
@@ -219,7 +296,7 @@ function App() {
                 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="previousReadingDate">Previous Reading Date *</label>
+                    <label htmlFor="previousReadingDate">{t('previousReadingDate')} *</label>
                     <input
                       type="date"
                       id="previousReadingDate"
@@ -231,7 +308,7 @@ function App() {
                   </div>
                   
                   <div className="form-group">
-                    <label htmlFor="currentReadingDate">Current Reading Date *</label>
+                    <label htmlFor="currentReadingDate">{t('currentReadingDate')} *</label>
                     <input
                       type="date"
                       id="currentReadingDate"
@@ -245,95 +322,147 @@ function App() {
                 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="connectionType">Connection Type *</label>
+                    <label htmlFor="connectionType">{t('connectionType')} *</label>
                     <select
                       id="connectionType"
                       name="connectionType"
                       value={formData.connectionType}
                       onChange={handleInputChange}
                     >
-                      <option value="domestic">Domestic</option>
-                      <option value="commercial">Commercial</option>
+                      <option value="domestic">{t('domestic')}</option>
+                      <option value="commercial">{t('commercial')}</option>
                     </select>
                   </div>
                   
                   <div className="form-group">
-                    <label htmlFor="meterPhase">Meter Phase *</label>
+                    <label htmlFor="meterPhase">{t('meterPhase')} *</label>
                     <select
                       id="meterPhase"
                       name="meterPhase"
                       value={formData.meterPhase}
                       onChange={handleInputChange}
                     >
-                      <option value="single">Single Phase</option>
-                      <option value="three">Three Phase</option>
+                      <option value="single">{t('singlePhase')}</option>
+                      <option value="three">{t('threePhase')}</option>
                     </select>
                   </div>
                 </div>
                 
                 <div className="form-actions">
-                  <button type="button" onClick={resetForm}>Reset</button>
-                  <button type="submit" className="primary">Calculate Bill</button>
+                  <button type="button" onClick={resetForm}>{t('reset')}</button>
+                  <button type="submit" className="primary">{t('calculateBill')}</button>
                 </div>
               </form>
             </div>
           ) : (
             <div className="result-container">
               <div className="bill-summary">
-                <h2>Electricity Bill Summary</h2>
+                <h2>{t('billSummary')}</h2>
                 <div className="bill-details">
                   <div className="detail-row">
-                    <span>Units Consumed:</span>
-                    <span>{billDetails.units} kWh</span>
+                    <span>{t('units')}:</span>
+                    <span>{billDetails.units} {t('kwh')}</span>
                   </div>
                   <div className="detail-row">
-                    <span>Connection Type:</span>
-                    <span>{billDetails.connectionType.charAt(0).toUpperCase() + billDetails.connectionType.slice(1)}</span>
+                    <span>{t('connectionType')}:</span>
+                    <span>{billDetails.connectionType === 'domestic' ? t('domestic') : t('commercial')}</span>
                   </div>
                   <div className="detail-row">
-                    <span>Meter Phase:</span>
-                    <span>{billDetails.meterPhase === 'single' ? 'Single Phase' : 'Three Phase'}</span>
+                    <span>{t('meterPhase')}:</span>
+                    <span>{billDetails.meterPhase === 'single' ? t('singlePhase') : t('threePhase')}</span>
                   </div>
                   <div className="detail-row">
-                    <span>Billing Period:</span>
-                    <span>{billDetails.billingPeriod} days</span>
+                    <span>{t('billingPeriod')}:</span>
+                    <span>{billDetails.billingPeriod} {t('days')}</span>
                   </div>
                   <div className="detail-row">
-                    <span>Energy Charges:</span>
+                    <span>{t('energyCharges')}:</span>
                     <span>₹{billDetails.energyCharge}</span>
                   </div>
                   <div className="detail-row">
-                    <span>Fixed Charges:</span>
+                    <span>{t('fixedCharges')}:</span>
                     <span>₹{billDetails.fixedCharge}</span>
                   </div>
                   <div className="detail-row">
-                    <span>Meter Charges:</span>
+                    <span>{t('meterCharges')}:</span>
                     <span>₹{billDetails.meterCharge}</span>
                   </div>
                   {parseFloat(billDetails.subsidy) > 0 && (
                     <div className="detail-row">
-                      <span>Subsidy:</span>
+                      <span>{t('subsidy')}:</span>
                       <span className="subsidy">-₹{billDetails.subsidy}</span>
                     </div>
                   )}
                   <div className="detail-row total">
-                    <span>Total Amount:</span>
+                    <span>{t('totalAmount')}:</span>
                     <span>₹{billDetails.totalAmount}</span>
                   </div>
                 </div>
                 
                 <div className="disclaimer">
-                  <p>These are approximate values only. Kindly contact your electricity board for accurate bill.</p>
+                  <p>{t('disclaimer')}</p>
                 </div>
               </div>
               
               <div className="actions">
-                <button onClick={resetForm} className="primary">Generate New Bill</button>
+                <button onClick={resetForm} className="primary">{t('generateNewBill')}</button>
               </div>
             </div>
           )}
         </main>
       </div>
+      
+      {/* Sliding Panel */}
+      {shouldRenderPanel && (
+        <div className={`sliding-panel-overlay ${panelOpenClass ? 'open' : ''}`}>
+          <div className="sliding-panel">
+            <div className="panel-header">
+              <h2>Settings</h2>
+              <button 
+                className="close-button" 
+                onClick={() => {
+                  setIsPanelOpen(false);
+                  setShowLanguageOptions(false);
+                }}
+                aria-label="Close panel"
+              >
+                ×
+              </button>
+            </div>
+            <div className="panel-content">
+              {!showLanguageOptions ? (
+                <button 
+                  className="panel-option"
+                  onClick={() => setShowLanguageOptions(true)}
+                >
+                  {t('language')}
+                </button>
+              ) : (
+                <>
+                  <button 
+                    className="back-button-icon"
+                    onClick={() => setShowLanguageOptions(false)}
+                  >
+                    ←
+                  </button>
+                  <button 
+                    className="panel-option"
+                    onClick={() => changeLanguage('en')}
+                  >
+                    English
+                  </button>
+                  <button 
+                    className="panel-option"
+                    onClick={() => changeLanguage('te')}
+                  >
+                    తెలుగు
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -10,11 +10,15 @@ body {
   background-color: #f5f7fa;
   color: #333;
   line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .app {
   min-height: 100vh;
   padding: 20px;
+  position: relative;
 }
 
 .container {
@@ -34,14 +38,177 @@ header {
   text-align: center;
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
 header h1 {
   font-size: 2rem;
   margin-bottom: 10px;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
 }
 
 header p {
   font-size: 1.1rem;
   opacity: 0.9;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-container {
+  position: relative;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Sliding Panel Styles */
+.sliding-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-start;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  will-change: opacity;
+}
+
+.sliding-panel-overlay.open {
+  opacity: 1;
+}
+
+.sliding-panel {
+  background: white;
+  width: 50%;
+  height: 100%;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.sliding-panel-overlay.open .sliding-panel {
+  transform: translateX(0);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.close-button:hover {
+  background-color: #f5f5f5;
+}
+
+.panel-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+}
+
+.panel-option {
+  padding: 15px 20px;
+  border: none;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.panel-option:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.back-button-icon {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #667eea;
+  padding: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  margin-bottom: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.back-button-icon:hover {
+  background-color: #e9ecef;
 }
 
 /* Main Content */
@@ -77,6 +244,7 @@ main {
   color: #667eea;
   font-size: 1.1rem;
   font-weight: 500;
+  text-align: center;
 }
 
 /* Form Styles */
@@ -143,6 +311,7 @@ button {
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button.primary {
@@ -244,8 +413,19 @@ button:disabled {
     padding: 20px 15px;
   }
   
+  .header-content {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
   header h1 {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  
+  header p {
+    font-size: 1rem;
   }
   
   main {
@@ -289,15 +469,43 @@ button:disabled {
   .disclaimer p {
     font-size: 0.85rem;
   }
+  
+  /* Mobile Sliding Panel */
+  .sliding-panel {
+    width: 80%;
+  }
 }
 
 @media (max-width: 480px) {
+  .app {
+    padding: 5px;
+  }
+  
+  header {
+    padding: 15px 10px;
+  }
+  
+  .header-content {
+    flex-direction: row;
+    gap: 5px;
+  }
+  
   header h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
   
   header p {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .menu-button {
+    font-size: 1.5rem;
+    width: 35px;
+    height: 35px;
+  }
+  
+  main {
+    padding: 15px 10px;
   }
   
   .bill-summary h2 {
@@ -306,5 +514,51 @@ button:disabled {
   
   .detail-row.total {
     font-size: 1.2rem;
+  }
+  
+  .form-actions {
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .panel-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .panel-option {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+  
+  .back-button-icon {
+    padding: 6px;
+    width: 32px;
+    height: 32px;
+    font-size: 1.3rem;
+  }
+  
+  /* Mobile Sliding Panel */
+  .sliding-panel {
+    width: 90%;
+  }
+}
+
+/* Force hardware acceleration for smoother animations */
+@media (max-width: 768px) {
+  .sliding-panel {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+    -webkit-transition: -webkit-transform 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sliding-panel-overlay.open .sliding-panel {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
   }
 }
