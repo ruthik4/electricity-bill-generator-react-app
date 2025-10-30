@@ -417,7 +417,7 @@ function App() {
         <div className={`sliding-panel-overlay ${panelOpenClass ? 'open' : ''}`}>
           <div className="sliding-panel">
             <div className="panel-header">
-              <h2>Settings</h2>
+              <h2>{t('settings')}</h2>
               <button 
                 className="close-button" 
                 onClick={() => {

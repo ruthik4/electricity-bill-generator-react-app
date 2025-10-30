@@ -115,7 +115,7 @@ header p {
   background: white;
   width: 50%;
   height: 100%;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
   display: flex;
@@ -131,14 +131,18 @@ header p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #eee;
+  padding: 25px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
 }
 
 .panel-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #333;
+  color: white;
+  flex: 1;
 }
 
 .close-button {
@@ -146,7 +150,7 @@ header p {
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  color: #999;
+  color: white;
   padding: 0;
   width: 30px;
   height: 30px;
@@ -159,38 +163,44 @@ header p {
 }
 
 .close-button:hover {
-  background-color: #f5f5f5;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .panel-content {
-  padding: 20px;
+  padding: 25px 20px;
   display: flex;
   flex-direction: column;
   gap: 15px;
   flex: 1;
+  background-color: #f5f7fa;
+  background: linear-gradient(to bottom, #f5f7fa 0%, #ffffff 100%);
 }
 
 .panel-option {
   padding: 15px 20px;
   border: none;
-  background: #f8f9fa;
+  background: white;
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s;
+  transition: all 0.3s;
   width: 100%;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  font-weight: 500;
 }
 
 .panel-option:hover {
-  background: #e9ecef;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .back-button-icon {
   align-self: flex-start;
-  background: none;
+  background: white;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
@@ -202,13 +212,17 @@ header p {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
   margin-bottom: 10px;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .back-button-icon:hover {
-  background-color: #e9ecef;
+  background-color: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
 }
 
 /* Main Content */
@@ -417,7 +431,9 @@ button:disabled {
     flex-direction: row;
     align-items: flex-start;
     gap: 10px;
+    
   }
+ 
   
   header h1 {
     font-size: 1.5rem;
@@ -472,7 +488,15 @@ button:disabled {
   
   /* Mobile Sliding Panel */
   .sliding-panel {
-    width: 80%;
+    width: 85%;
+  }
+  
+  .panel-header {
+    padding: 20px 15px;
+  }
+  
+  .panel-content {
+    padding: 20px 15px;
   }
 }
 
@@ -544,7 +568,15 @@ button:disabled {
   
   /* Mobile Sliding Panel */
   .sliding-panel {
-    width: 90%;
+    width: 95%;
+  }
+  
+  .panel-header {
+    padding: 15px 10px;
+  }
+  
+  .panel-content {
+    padding: 15px 10px;
   }
 }
 
@@ -555,6 +587,7 @@ button:disabled {
     transform: translateX(-100%);
     -webkit-transition: -webkit-transform 0.3s ease-in-out;
     transition: transform 0.3s ease-in-out;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
   }
   
   .sliding-panel-overlay.open .sliding-panel {
