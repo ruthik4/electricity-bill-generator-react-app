@@ -250,8 +250,13 @@ main {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-container p {
@@ -288,7 +293,8 @@ label {
   color: #444;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 12px 15px;
   border: 1px solid #ddd;
@@ -297,7 +303,8 @@ input, select {
   transition: border-color 0.3s;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
@@ -422,79 +429,79 @@ button:disabled {
   .app {
     padding: 10px;
   }
-  
+
   header {
     padding: 20px 15px;
   }
-  
+
   .header-content {
     flex-direction: row;
     align-items: flex-start;
     gap: 10px;
-    
+
   }
- 
-  
+
+
   header h1 {
     font-size: 1.5rem;
     margin-bottom: 5px;
   }
-  
+
   header p {
     font-size: 1rem;
   }
-  
+
   main {
     padding: 20px 15px;
   }
-  
+
   .form-row {
     flex-direction: column;
     gap: 0;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .form-actions button {
     width: 100%;
   }
-  
+
   .bill-summary {
     padding: 20px 15px;
   }
-  
+
   .detail-row {
     flex-direction: column;
     gap: 5px;
   }
-  
+
   .detail-row span:last-child {
     font-weight: bold;
   }
-  
+
   .detail-row.total {
     flex-direction: row;
   }
-  
+
   .disclaimer {
     padding: 12px;
   }
-  
+
   .disclaimer p {
     font-size: 0.85rem;
   }
-  
+
   /* Mobile Sliding Panel */
   .sliding-panel {
     width: 85%;
   }
-  
+
   .panel-header {
     padding: 20px 15px;
   }
-  
+
   .panel-content {
     padding: 20px 15px;
   }
@@ -504,77 +511,77 @@ button:disabled {
   .app {
     padding: 5px;
   }
-  
+
   header {
     padding: 15px 10px;
   }
-  
+
   .header-content {
     flex-direction: row;
     gap: 5px;
   }
-  
+
   header h1 {
     font-size: 1.3rem;
   }
-  
+
   header p {
     font-size: 0.9rem;
   }
-  
+
   .menu-button {
     font-size: 1.5rem;
     width: 35px;
     height: 35px;
   }
-  
+
   main {
     padding: 15px 10px;
   }
-  
+
   .bill-summary h2 {
     font-size: 1.5rem;
   }
-  
+
   .detail-row.total {
     font-size: 1.2rem;
   }
-  
+
   .form-actions {
     gap: 10px;
     margin-top: 20px;
   }
-  
+
   button {
     padding: 10px 20px;
     font-size: 14px;
   }
-  
+
   .panel-header h2 {
     font-size: 1.3rem;
   }
-  
+
   .panel-option {
     padding: 12px 15px;
     font-size: 14px;
   }
-  
+
   .back-button-icon {
     padding: 6px;
     width: 32px;
     height: 32px;
     font-size: 1.3rem;
   }
-  
+
   /* Mobile Sliding Panel */
   .sliding-panel {
-    width: 95%;
+    width: 60%;
   }
-  
+
   .panel-header {
     padding: 15px 10px;
   }
-  
+
   .panel-content {
     padding: 15px 10px;
   }
@@ -589,7 +596,7 @@ button:disabled {
     transition: transform 0.3s ease-in-out;
     box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
   }
-  
+
   .sliding-panel-overlay.open .sliding-panel {
     -webkit-transform: translateX(0);
     transform: translateX(0);
